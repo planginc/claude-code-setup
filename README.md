@@ -2,6 +2,18 @@
 
 A shareable Claude Code workflow system with hooks for structured sessions, project tracking, and quality guardrails.
 
+## Why hooks, not just CLAUDE.md instructions
+
+Most people try to solve session handover with CLAUDE.md instructions: "At the end of every session, save a note and write HANDOVER.md." This does not work reliably. Claude follows those instructions when it remembers to, skips them when context is long, and has no enforcement mechanism if it just... doesn't.
+
+Hooks are different. They are shell scripts that Claude Code executes at specific events -- session start, before a tool runs, after a tool runs, when the agent loop ends. Claude cannot skip them. They fire whether Claude remembers the rule or not.
+
+The end-session hook here intercepts the phrase "end conversation" before Claude even processes it, injects the checklist as a system message, and exits with code 2 (blocked) until the checklist is complete. Claude is structurally prevented from closing the session without doing the work.
+
+The session start hook fires before Claude says its first word. It forces retrieval of last session notes and HANDOVER.md, and blocks Claude from asking "what do you want to work on today?" until it has presented the actual backlog.
+
+If you put these behaviors only in CLAUDE.md, they will drift. Long sessions compress context and the rules get forgotten. Hooks do not get forgotten.
+
 ## What this gives you
 
 - **Session start**: Claude automatically asks which project you're working on, retrieves last session notes, and presents your backlog before touching any code.
