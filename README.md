@@ -83,6 +83,26 @@ IMPROVEMENTS.md              -- What is being built next
 - `CLAUDE.md.template` has `[PLACEHOLDER]` markers for your name, database URLs, and project IDs. Fill these in before using it.
 - The end-session hooks mention Convex as the note storage system. If you use a different backend, edit the checklist text in both `end-session-checklist.sh` and `end-session-trigger.sh`.
 
+## How struggles become hooks (the graduation lifecycle)
+
+The end-session checklist includes a "struggle scan" -- Step 0, always first. Before saving notes or writing HANDOVER.md, Claude reviews the full conversation for: errors that required retries, corrections you had to make, commands that failed, rules it should have followed but didn't.
+
+Each struggle gets saved as a note (troubleshooting or technical_solution type) linked to the project. That's the capture stage.
+
+But the real value comes from what happens over time. The system is designed around a three-stage lifecycle:
+
+| Stage | What happens | Where it lives |
+|-------|-------------|----------------|
+| 1. Capture | Struggle saved as a note after the session | Note storage, linked to project |
+| 2. Promote | Same struggle appears in 2+ sessions -- add a rule to project CLAUDE.md | Local file |
+| 3. Automate | Rule gets triggered 3+ times -- write a hook that enforces it mechanically | ~/.claude/hooks/ |
+
+The goal: a problem you hit once gets noted. A problem you hit twice becomes a rule Claude follows. A problem you hit three times gets a hook that makes it structurally impossible to hit again.
+
+This is how the hooks in this repo were built. They did not start as hooks. They started as struggles -- Claude forgetting to do the end-of-session work, em dashes slipping into public content, git pushes failing because of a misconfigured email. Each one was captured, became a rule, and eventually became a hook when it kept recurring.
+
+Over time your `~/.claude/hooks/` folder becomes a record of every recurring mistake that has been automated away. If you review your troubleshooting notes periodically and ask "which of these has come up more than twice?" -- those are your next hooks.
+
 ## See also
 
 - [IMPROVEMENTS.md](IMPROVEMENTS.md) for what is being built next
